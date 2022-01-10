@@ -1,0 +1,11 @@
+{
+  "name": "cumcord-tools",
+  "version": "1.0.0",
+  "description": "A set of absolutely tiny utilities to add to your Discord plugins.",
+  "main": "index.js",
+  "author": "Yellowsink",
+  "license": "Unlicense",
+  "devDependencies": {
+    "flow-bin": "^0.169.0"
+  }
+}

@@ -1,0 +1,15 @@
+lockfileVersion: 5.3
+
+specifiers:
+  flow-bin: ^0.169.0
+
+devDependencies:
+  flow-bin: 0.169.0
+
+packages:
+
+  /flow-bin/0.169.0:
+    resolution: {integrity: sha512-CflYPrd4KiMh5RyvoJbkM5Az1PKDzFBCu3tHqNcZkHeCbYgtLAcYVTs1w8aKDXfTiBSPZ7B9u5KT5RdmsY2mzQ==}
+    engines: {node: '>=0.10.0'}
+    hasBin: true
+    dev: true
