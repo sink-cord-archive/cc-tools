@@ -1,7 +1,19 @@
 // @flow strict
 
+// make flow happy with lodash
+const _ = window._;
+
 // $FlowExpectedError[cannot-resolve-module]
 import { persist } from "@cumcord/pluginData";
+
+/*::
+type Nest = {
+  // $FlowExpectedError[unclear-type]
+  ghost: any,
+  // $FlowExpectedError[unclear-type]
+  store: any, // Proxy<any> didnt like setting
+}
+*/
 
 /*::
 type TimeOutFunc = (
@@ -12,26 +24,49 @@ type TimeOutFunc = (
 ) => void
 */
 
-const broadcastEvent = (cacheName /*: string */) => {
-  persist.store[cacheName] = persist.ghost[cacheName];
+const broadcastEvent = (cacheName /*: string */, nest /*: Nest */) => {
+  nest.store[cacheName] = nest.ghost[cacheName];
 };
 
 const parseTime = (raw /*: string */) /*: number */ => {
-  //TODO: implement a parser for relative human times
+  const timeNum = parseFloat(raw.slice(0, -1));
+
+  switch (_.last(raw)) {
+    case "s":
+      return timeNum * 1000;
+
+    case "m":
+      return timeNum * 1000 * 60;
+
+    case "h":
+      return timeNum * 1000 * 60 * 60;
+
+    case "d":
+      return timeNum * 1000 * 60 * 60 * 24;
+
+    case "w":
+      return timeNum * 1000 * 60 * 60 * 24 * 7;
+
+    case "y":
+      return timeNum * 1000 * 60 * 60 * 24 * 365;
+
+    default:
+      throw new Error(`time unit ${_.last(raw)} is not recognised`);
+  }
 };
 
-const timeOut /*: (string) => TimeOutFunc */ =
-  (cacheName) =>
+const timeOut /*: (string, Nest) => TimeOutFunc */ =
+  (cacheName, nest) =>
   (key, val, time, since = Date.now()) => {
-    const store /*: Map<string, mixed> */ = persist.ghost[cacheName];
+    const store /*: Map<string, mixed> */ = nest.ghost[cacheName];
     store.set(key, [val, since, time]);
 
-    broadcastEvent(cacheName);
+    broadcastEvent(cacheName, nest);
   };
 
-function clearTime(cacheName /*: string */) {
+function clearTime(cacheName /*: string */, nest /*: Nest */) {
   const current = Date.now();
-  const store /*: Map<string, mixed> */ = persist.ghost[cacheName];
+  const store /*: Map<string, mixed> */ = nest.ghost[cacheName];
   Array.from(store.entries()).forEach(([key, val]) => {
     if (
       !Array.isArray(val) ||
@@ -44,18 +79,19 @@ function clearTime(cacheName /*: string */) {
     if (val[1] + parseTime(val[2]) >= current) store.delete(key);
   });
 
-  broadcastEvent(cacheName);
+  broadcastEvent(cacheName, nest);
 }
 
 export default function init(
-  cacheName /*: string */ = "cumcache"
+  cacheName /*: string */ = "cumcache",
+  nest /*: Nest */ = persist
 ) /*: [() => void, TimeOutFunc, () => void] */ {
-  if (!persist.ghost[cacheName]) persist.store[cacheName] = new Map();
-  const cancelTimeoutCode = setTimeout(() => clearTime(cacheName), 5000);
-  clearTime(cacheName);
+  if (!nest.ghost[cacheName]) nest.store[cacheName] = new Map();
+  const cancelTimeoutCode = setTimeout(() => clearTime(cacheName, nest), 5000);
+  clearTime(cacheName, nest);
   return [
     () => clearTimeout(cancelTimeoutCode),
-    timeOut(cacheName),
-    () => clearTime(cacheName),
+    timeOut(cacheName, nest),
+    () => clearTime(cacheName, nest),
   ];
 }
