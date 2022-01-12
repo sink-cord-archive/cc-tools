@@ -24,7 +24,7 @@ A keyval store that sits on top of your persist nest (or any other nest!) and al
 Init the store as follows:
 
 ```js
-import { cumcache } from "cc-tools";
+import { cumcache } from "cumcord-tools";
 
 // calling cumcache inits the store, only do this ONCE unless you uninit/cleanup it afterwards
 // cumcache takes the key in the nest to use, defaults to cumcache, and a nest, defaults to the persist nest.
