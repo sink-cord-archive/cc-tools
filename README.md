@@ -16,8 +16,7 @@ See each tool documented below.
 
 ## Cumcache
 
-*Quick fun fact: as of commit 6ba4bb1, cumcache takes up only 867 bytes when bundled in with sperm!
-(No promises about changes since then, just making the "absolutely tiny" point again!)*
+*Current bundled size: 940 bytes*
 
 A keyval store that sits on top of your persist nest (or any other nest!) and allows setting expiry times for each pair.
 
