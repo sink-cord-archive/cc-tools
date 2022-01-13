@@ -30,9 +30,9 @@ import { cumcache } from "cumcord-tools";
 // cumcache takes the key in the nest to use, defaults to cumcache, and a nest, defaults to the persist nest.
 // as should be obvious by the fact they have defaults, both these args are optional.
 
-// as JS array destructuring works, feel free to just destructure to [cleanup, timeOut]
+// as JS array destructuring works, feel free to just destructure to [cleanup, timeOut, store]
 // use of forceStoreClear is not recommended.
-let [cleanup, timeOut, forceStoreClear] = cumcache("my-epic-keyval");
+let [cleanup, timeOut, store, forceStoreClear] = cumcache("my-epic-keyval");
 ```
 
 Then call `cleanup()` once you're done with the store, MAKE SURE YOU DO THIS (usually in your onUnload)
@@ -55,10 +55,12 @@ The acceptable time values are any number, int or float, followed by a one lette
 - `1w` = 1 week
 - `1y` = 1 year
 
+`store` is a proxy allowing you to get values.
+
 ```js
 import { cumcache } from "cc-tools";
 
-let [cleanup, timeOut] = cumcache("my-epic-keyval");
+let [cleanup, timeOut, store] = cumcache("my-epic-keyval");
 
 /* 
 nest.ghost: {
@@ -70,6 +72,8 @@ nest.ghost: {
 
 // sets key hello to value {world:5}, and clears after 10 seconds
 timeOut("hello", { world: 5 }, "10s");
+
+let val = store.hello; // val = { world: 5 }
 
 /* 
 nest.ghost: {

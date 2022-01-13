@@ -82,16 +82,22 @@ function clearTime(cacheName /*: string */, nest /*: Nest */) {
   broadcastEvent(cacheName, nest);
 }
 
+const getProxy = (cacheName /*: string */, nest /*: Nest */) /*: Proxy<mixed> */ =>
+  new Proxy(nest.ghost[cacheName], {
+    get: (_, prop) => nest.ghost[cacheName][prop][0],
+  });
+
 export default function init(
   cacheName /*: string */ = "cumcache",
   nest /*: Nest */ = persist
-) /*: [() => void, TimeOutFunc, () => void] */ {
+) /*: [() => void, TimeOutFunc, Proxy<mixed>, () => void] */ {
   if (!nest.ghost[cacheName]) nest.store[cacheName] = new Map();
   const cancelTimeoutCode = setTimeout(() => clearTime(cacheName, nest), 5000);
   clearTime(cacheName, nest);
   return [
     () => clearTimeout(cancelTimeoutCode),
     timeOut(cacheName, nest),
+    getProxy(cacheName, nest),
     () => clearTime(cacheName, nest),
   ];
 }
