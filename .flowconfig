@@ -3,6 +3,7 @@
 [include]
 
 [libs]
+types.flow.js
 
 [lints]
 

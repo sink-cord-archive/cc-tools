@@ -1,4 +1,5 @@
-// @flow
-import init from "./cumcache"
+// @flow strict
+import cumcache from "./cumcache"
+import boundCumcache from "./bound-cumcache"
 
-export { init as cumcache };
+export { cumcache, boundCumcache };

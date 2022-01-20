@@ -6,24 +6,6 @@ const _ = window._;
 // $FlowExpectedError[cannot-resolve-module]
 import { persist } from "@cumcord/pluginData";
 
-/*::
-type Nest = {
-  // $FlowExpectedError[unclear-type]
-  ghost: any,
-  // $FlowExpectedError[unclear-type]
-  store: any, // Proxy<any> didnt like setting
-}
-*/
-
-/*::
-type TimeOutFunc = (
-  key: string,
-  val: mixed,
-  time: string,
-  since?: number
-) => void
-*/
-
 const broadcastEvent = (cacheName /*: string */, nest /*: Nest */) => {
   nest.store[cacheName] = nest.ghost[cacheName];
 };
@@ -83,6 +65,10 @@ const getProxy = (
 ) /*: Proxy<mixed> */ =>
   new Proxy(nest.ghost[cacheName], {
     get: (_, prop) => nest.ghost[cacheName].get(prop)?.[0],
+    set: (_, __, ___) => {
+      throw Error("Setting to the cumcache store is not allowed.");
+    },
+    deleteProperty: (_, key) => nest.ghost[cacheName].delete(key),
   });
 
 export default function init(

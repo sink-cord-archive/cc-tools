@@ -16,7 +16,7 @@ See each tool documented below.
 
 ## Cumcache
 
-*Current bundled size: 906 bytes*
+_Current bundled size: 1025 bytes_
 
 A keyval store that sits on top of your persist nest (or any other nest!) and allows setting expiry times for each pair.
 
@@ -54,7 +54,7 @@ The acceptable time values are any number, int or float, followed by a one lette
 - `1w` = 1 week
 - `1y` = 1 year
 
-`store` is a proxy allowing you to get values.
+`store` is a proxy allowing you to get values and `delete` values. Setting is not allowed.
 
 ```js
 import { cumcache } from "cc-tools";
@@ -96,4 +96,34 @@ cleanup();
 // the nest will remain in the state it was in at the time of cleanup
 // keys will persist in memory and any that expire while cumcache
 // is inactive will be cleared the next time cumcache is inited on the same key.
+```
+
+## Bound Cumcache
+
+_Current bundled size: 1183 bytes_
+
+Cumcache packs a huge amount of flexibility into its small footprint, however much of it is likely to go unused.
+
+Specifically, in actual usage, most people do not set a custom `since` date (it can be left blank anyway),
+and most will want to use the same expiry for everything in that particular cache.
+
+Bound cumcache takes these two freedoms away from individual key-val pairs,
+instead allowing just the expiry time to be set when initing the cache.
+
+In return, the timeout method is replaced by making the store you read from also writable.
+The stock cumcache store allows deleting but not setting.
+Bound cumcache allows setting, which will use the expiry set in the init.
+
+Just as in stock cumcache, you can also get a func to force remove expired functions, but it is not recommended:
+`let [cleanup, store, forceStoreClear] = boundCumcache(...)`.
+
+```js
+import { boundCumcache } from "cc-tools";
+
+let [cleanup, store] = boundCumcache("my-epic-keyval", "10s");
+
+// set key "hello" to value {world: 5}
+store.hello = { world: 5 };
+// get key
+let x = store.hello; // x === {world: 5}
 ```
