@@ -57,7 +57,7 @@ The acceptable time values are any number, int or float, followed by a one lette
 `store` is a proxy allowing you to get values and `delete` values. Setting is not allowed.
 
 ```js
-import { cumcache } from "cc-tools";
+import { cumcache } from "cumcord-tools";
 
 let [cleanup, timeOut, store] = cumcache("my-epic-keyval");
 
@@ -118,7 +118,7 @@ Just as in stock cumcache, you can also get a func to force remove expired funct
 `let [cleanup, store, forceStoreClear] = boundCumcache(...)`.
 
 ```js
-import { boundCumcache } from "cc-tools";
+import { boundCumcache } from "cumcord-tools";
 
 let [cleanup, store] = boundCumcache("my-epic-keyval", "10s");
 
