@@ -59,7 +59,7 @@ const timeOut /*: (string, Nest) => TimeOutFunc */ =
   (cacheName, nest) =>
   (key, val, time, since = Date.now()) => {
     const store /*: Map<string, mixed> */ = nest.ghost[cacheName];
-    store.set(key, [val, since, time]);
+    store.set(key, [val, since + parseTime(time)]);
 
     broadcastEvent(cacheName, nest);
   };
@@ -67,22 +67,20 @@ const timeOut /*: (string, Nest) => TimeOutFunc */ =
 function clearTime(cacheName /*: string */, nest /*: Nest */) {
   const current = Date.now();
   const store /*: Map<string, mixed> */ = nest.ghost[cacheName];
-  Array.from(store.entries()).forEach(([key, val]) => {
-    if (
-      !Array.isArray(val) ||
-      val.length !== 3 ||
-      typeof val[1] !== "number" ||
-      typeof val[2] !== "string"
-    )
+  for (const [key, val] of store.entries()) {
+    if (!Array.isArray(val) || val.length !== 2 || typeof val[1] !== "number")
       throw new Error("cacheName does not point to a cumcache store");
 
-    if (val[1] + parseTime(val[2]) >= current) store.delete(key);
-  });
+    if (val[1] >= current) store.delete(key);
+  };
 
   broadcastEvent(cacheName, nest);
 }
 
-const getProxy = (cacheName /*: string */, nest /*: Nest */) /*: Proxy<mixed> */ =>
+const getProxy = (
+  cacheName /*: string */,
+  nest /*: Nest */
+) /*: Proxy<mixed> */ =>
   new Proxy(nest.ghost[cacheName], {
     get: (_, prop) => nest.ghost[cacheName][prop][0],
   });
