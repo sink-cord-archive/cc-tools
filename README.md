@@ -16,7 +16,7 @@ See each tool documented below.
 
 ## Cumcache
 
-*Current bundled size: 898 bytes*
+*Current bundled size: 906 bytes*
 
 A keyval store that sits on top of your persist nest (or any other nest!) and allows setting expiry times for each pair.
 

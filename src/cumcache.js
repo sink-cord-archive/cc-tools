@@ -72,7 +72,7 @@ function clearTime(cacheName /*: string */, nest /*: Nest */) {
       throw new Error("cacheName does not point to a cumcache store");
 
     if (val[1] >= current) store.delete(key);
-  };
+  }
 
   broadcastEvent(cacheName, nest);
 }
@@ -82,7 +82,7 @@ const getProxy = (
   nest /*: Nest */
 ) /*: Proxy<mixed> */ =>
   new Proxy(nest.ghost[cacheName], {
-    get: (_, prop) => nest.ghost[cacheName][prop][0],
+    get: (_, prop) => nest.ghost[cacheName].get(prop)?.[0],
   });
 
 export default function init(
@@ -90,10 +90,10 @@ export default function init(
   nest /*: Nest */ = persist
 ) /*: [() => void, TimeOutFunc, Proxy<mixed>, () => void] */ {
   if (!nest.ghost[cacheName]) nest.store[cacheName] = new Map();
-  const cancelTimeoutCode = setTimeout(() => clearTime(cacheName, nest), 5000);
+  const cancelTimeoutCode = setInterval(() => clearTime(cacheName, nest), 5000);
   clearTime(cacheName, nest);
   return [
-    () => clearTimeout(cancelTimeoutCode),
+    () => clearInterval(cancelTimeoutCode),
     timeOut(cacheName, nest),
     getProxy(cacheName, nest),
     () => clearTime(cacheName, nest),
