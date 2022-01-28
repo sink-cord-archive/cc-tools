@@ -1,0 +1,14 @@
+{
+    "tabWidth": 2,
+    "singleQuote": false,
+    "semi": true,
+    "bracketSpacing": true,
+    "overrides": [
+        {
+            "files": "*.js",
+            "options": {
+                "parser": "babel-flow"
+            }
+        }
+    ]
+}

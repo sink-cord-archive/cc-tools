@@ -149,3 +149,35 @@ let Component = findByDomNode(domNode);
 let ComponentParent = findByDomNode(domNode, true);
 ComponentParent === { default: Component }
 ```
+
+## Depend
+
+_Current bundled size: 370 bytes_
+
+Depend is a tool to depend on another plugin's side effects,
+while allowing both your code and the depended upon plugin to unload and re-load freely.
+
+A good use case is where plugins export an API on window thats only there while the plugin is loaded.
+
+```js
+import { depend } from "cumcord-tools"
+let pluginsToDependOn = [
+    "https://example.com/cool-plugin/",
+    "https://cumcordplugins.github.io/Condom/example.com/cool-plugin/"
+]
+
+let undepend = depend(pluginsToDependOn, () => {
+    console.log("One of the plugins listed has been loaded, or already was loaded");
+    // let unpatch = after("cool_function", obj, () => {/* ... */});
+
+    // this return is optional, returning nothing will simply not bother
+    return () => {
+        console.log("One of the plugins listed has been unloaded.")
+        // cleanup stuff in here.
+        // unpatch();
+    }
+})
+
+// i'm done with this code and wish to stop listening for dep un/load events, and cleanly finish
+undepend();
+```
