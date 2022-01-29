@@ -130,7 +130,7 @@ let x = store.hello; // x === {world: 5}
 
 ## Find by DOM node
 
-_Current bundled size: 198 bytes_
+_Current bundled size: 229 bytes_
 
 This tool is highly discouraged except for testing -
 you should use a better method to locate modules and not rely on the DOM,
@@ -139,15 +139,23 @@ but its here if you need it.
 This tool finds a react component from the DOM element.
 It optionally gets the module containing the component.
 
+You may optionally require that the element must have a display name.
+This will ignore any anonymous components and only get named elements.
+
 ```jsx
 import { findByDomNode } from "cumcord-tools"
 let domNode = /* get a dom node of a component */
 let Component = findByDomNode(domNode);
 <Component />
 
-// allow strings
+// allow strings (div etc)
 let ComponentParent = findByDomNode(domNode, true);
 ComponentParent === { default: Component }
+
+// must have display name
+let ActualComponent = findByDomNode(domNode, false, true);
+// <ActualComponent><Component /></ActualComponent>
+// where Component is anonymous and ActualComponent is exported
 ```
 
 ## Depend

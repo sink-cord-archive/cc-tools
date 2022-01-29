@@ -7,11 +7,15 @@ import { find } from "@cumcord/modules/webpack";
 
 export default (
   node /*: HTMLElement */,
-  parent /*: boolean */ = false
+  parent /*: boolean */ = false,
+  displayName /*: boolean */ = false
 ) /*: mixed */ => {
   // NOTE: no recursion limit, but *should* be okay
   const walk = (fiber) =>
-    typeof fiber?.type === "string" ? walk(fiber.return) : fiber?.type;
+    typeof fiber?.type === "string" ||
+    (displayName && !fiber?.type?.displayName)
+      ? walk(fiber.return)
+      : fiber?.type;
 
   const type = walk(getReactInstance(node));
 
