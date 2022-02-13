@@ -8,7 +8,7 @@ const testPlugin = (test) =>
 const initManifest = () =>
   $`npm exec sperm init -- -n test -d test -a test -l test -f index.js`;
 
-const tests = ["cumcache", "boundCumcache", "findByDomNode", "depend"];
+const tests = ["cumcache", "boundCumcache", "findByDomNode", "depend", "lazyPatcher"];
 
 // BUILD ALL PLUGINS
 for (const test of tests) {
@@ -20,7 +20,7 @@ for (const test of tests) {
   await $`echo ${testPlugin(test)} > index.js`;
   await $`npm exec sperm build`;
   // come back up again
-  cd(".");
+  cd("..");
 }
 
 
@@ -30,7 +30,7 @@ cd("base_comparison");
 await initManifest();
 await $`echo ${emptyPlugin} > index.js`;
 await $`npm exec sperm build`;
-cd(".");
+cd("..");
 
 // get sizes
 const sizes = {};

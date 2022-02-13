@@ -189,3 +189,24 @@ let undepend = depend(pluginsToDependOn, () => {
 // i'm done with this code and wish to stop listening for dep un/load events, and cleanly finish
 undepend();
 ```
+
+## Lazy Patcher
+
+_Current bundled size: 573 bytes_
+
+Patches a lazy component, usually context menus
+
+Exports an object with `{ patch, patchContextMenu }`.
+
+An example: patching message context menus.
+```js
+import { lazyPatcher } from "cumcord-tools";
+import { after } from "@cumcord/patcher";
+lazyPatcher.patchContextMenu(
+    "MessageContextMenu",
+    (msgCtxtMenu) => after("default", msgCtxtMenu, console.log)
+);
+
+// patching other lazy things
+lazyPatcher.patch("open<THING>Lazy", "displayName", (mod) => after(/* ... */))
+```
