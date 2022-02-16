@@ -3,6 +3,6 @@ import cumcache from "./cumcache";
 import boundCumcache from "./bound-cumcache";
 import findByDomNode from "./findByDomNode";
 import depend from "./depend";
-import lazyPatcher from "./lazyPatcher";
+import patchSettingsView from "./patchSettingsView";
 
-export { cumcache, boundCumcache, findByDomNode, depend, lazyPatcher };
+export { cumcache, boundCumcache, findByDomNode, depend, patchSettingsView };

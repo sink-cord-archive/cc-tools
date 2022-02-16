@@ -168,45 +168,48 @@ while allowing both your code and the depended upon plugin to unload and re-load
 A good use case is where plugins export an API on window thats only there while the plugin is loaded.
 
 ```js
-import { depend } from "cumcord-tools"
+import { depend } from "cumcord-tools";
 let pluginsToDependOn = [
-    "https://example.com/cool-plugin/",
-    "https://cumcordplugins.github.io/Condom/example.com/cool-plugin/"
-]
+  "https://example.com/cool-plugin/",
+  "https://cumcordplugins.github.io/Condom/example.com/cool-plugin/",
+];
 
 let undepend = depend(pluginsToDependOn, () => {
-    console.log("One of the plugins listed has been loaded, or already was loaded");
-    // let unpatch = after("cool_function", obj, () => {/* ... */});
+  console.log(
+    "One of the plugins listed has been loaded, or already was loaded"
+  );
+  // let unpatch = after("cool_function", obj, () => {/* ... */});
 
-    // this return is optional, returning nothing will simply not bother
-    return () => {
-        console.log("One of the plugins listed has been unloaded.")
-        // cleanup stuff in here.
-        // unpatch();
-    }
-})
+  // this return is optional, returning nothing will simply not bother
+  return () => {
+    console.log("One of the plugins listed has been unloaded.");
+    // cleanup stuff in here.
+    // unpatch();
+  };
+});
 
 // i'm done with this code and wish to stop listening for dep un/load events, and cleanly finish
 undepend();
 ```
 
-## Lazy Patcher
+## Patch SettingsView
 
-_Current bundled size: 573 bytes_
+_Current bundled size: 457 bytes_
 
-Patches a lazy component, usually context menus
+`SettingsView` is important to be able to inject into for some uses,
+however was recently made lazy-loaded.
 
-Exports an object with `{ patch, patchContextMenu }`.
+This tool will allow you to lazily patch it, doing the heavy lifting for you.
 
-An example: patching message context menus.
+If [this patch](https://lists.sr.ht/~creatable/cumcord-devel/patches/29496)
+is merged into CC, expect to see the bundle size for this tool go down a good bit.
+
 ```js
-import { lazyPatcher } from "cumcord-tools";
+import { patchSettingsView } from "cumcord-tools";
 import { after } from "@cumcord/patcher";
-lazyPatcher.patchContextMenu(
-    "MessageContextMenu",
-    (msgCtxtMenu) => after("default", msgCtxtMenu, console.log)
+const unpatch = patchSettingsView((SettingsView) =>
+  after("getPredicateSections", SettingsView.prototype, (args, ret) => {
+    /* ... */
+  })
 );
-
-// patching other lazy things
-lazyPatcher.patch("open<THING>Lazy", "displayName", (mod) => after(/* ... */))
 ```

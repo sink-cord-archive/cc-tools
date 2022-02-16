@@ -8,7 +8,7 @@ const testPlugin = (test) =>
 const initManifest = () =>
   $`npm exec sperm init -- -n test -d test -a test -l test -f index.js`;
 
-const tests = ["cumcache", "boundCumcache", "findByDomNode", "depend", "lazyPatcher"];
+const tests = ["cumcache", "boundCumcache", "findByDomNode", "depend", "patchSettingsView"];
 
 // BUILD ALL PLUGINS
 for (const test of tests) {
