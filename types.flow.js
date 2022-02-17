@@ -1,11 +1,12 @@
 // @flow strict
 
-declare type Nest = {
-  // $FlowExpectedError[unclear-type]
-  ghost: any,
-  // $FlowExpectedError[unclear-type]
-  store: any, // Proxy<any> didnt like setting
+declare type Nest<T> = {
+  ghost: T,
+  store: T, // ew
+  set: ({path: string[], value: any}) => void,
 };
+
+declare type CumcacheNest = Nest<{ [string]: Map<string, mixed> }>;
 
 declare type TimeOutFunc = (
   key: string,

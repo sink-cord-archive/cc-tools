@@ -6,7 +6,7 @@ import { persist } from "@cumcord/pluginData";
 export default function init(
   cacheName /*: string */,
   timeOut /*: string */,
-  nest /*: Nest */ = persist
+  nest /*: CumcacheNest */ = persist
 ) /*: [() => void, Proxy<mixed>, () => void] */ {
   const [cleanup, timeout, readonlyStore, forceStoreClear] = cumcache(
     cacheName,
@@ -14,9 +14,9 @@ export default function init(
   );
 
   const proxy = new Proxy(readonlyStore, {
-    // $FlowExpectedError[prop-missing]
+    // $FlowExpectedError[incompatible-use]
     get: (_, key) => readonlyStore[key],
-    // $FlowExpectedError[prop-missing]
+    // $FlowExpectedError[incompatible-use]
     deleteProperty: (_, key) => delete readonlyStore[key],
 
     set: (_, key, val) => {
