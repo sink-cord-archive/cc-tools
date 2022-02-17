@@ -16,7 +16,7 @@ See each tool documented below.
 
 ## Cumcache
 
-_Current bundled size: 1025 bytes_
+_Current bundled size: 1033 bytes_
 
 A keyval store that sits on top of your persist nest (or any other nest!) and allows setting expiry times for each pair.
 
@@ -100,7 +100,7 @@ cleanup();
 
 ## Bound Cumcache
 
-_Current bundled size: 1183 bytes_
+_Current bundled size: 1191 bytes_
 
 Cumcache packs a huge amount of flexibility into its small footprint, however much of it is likely to go unused.
 
@@ -192,24 +192,41 @@ let undepend = depend(pluginsToDependOn, () => {
 undepend();
 ```
 
-## Patch SettingsView
+## DePromisify Patch
 
-_Current bundled size: 457 bytes_
+_Current bundled size: 80 bytes_
 
-`SettingsView` is important to be able to inject into for some uses,
-however was recently made lazy-loaded.
+With the introduction of `findAsync` to Cumcord,
+it is becoming more relevant to have to deal with modules resolving asynchronously
+that need patching synchronously.
 
-This tool will allow you to lazily patch it, doing the heavy lifting for you.
+This function will create a wrapper that manages the async loading for you and returns
+a fake patch that behaves exactly how you'd expect a synchrounous patch.
 
-If [this patch](https://lists.sr.ht/~creatable/cumcord-devel/patches/29496)
-is merged into CC, expect to see the bundle size for this tool go down a good bit.
+It will handle the patch being applied and unpatched at any state of the promise.
+
+For an example, here's how to inject `SettingsView`:
 
 ```js
-import { patchSettingsView } from "cumcord-tools";
+import { dePromisifyPatch } from "cumcord-tools";
+import { findAsync, findByDisplayName } from "@cumcord/modules/webpack";
 import { after } from "@cumcord/patcher";
-const unpatch = patchSettingsView((SettingsView) =>
-  after("getPredicateSections", SettingsView.prototype, (args, ret) => {
+
+// the pre-lazyload method
+const unpatch = after(
+  "getPredicateSections",
+  findByDisplayName("SettingsView").prototype,
+  () => {
     /* ... */
-  })
+  }
+);
+
+// the new method that will deal with Discord's lazy loading
+const unpatch = dePromisifyPatch(
+  findAsync(() => findByDisplayName("SettingsView")),
+  (SettingsView) =>
+    after("getPredicateSections", SettingsView.prototype, () => {
+      /* ... */
+    })
 );
 ```
