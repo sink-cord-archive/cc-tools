@@ -8,7 +8,7 @@ const testPlugin = (test) =>
 const initManifest = () =>
   $`npm exec sperm init -- -n test -d test -a test -l test -f index.js`;
 
-const tests = ["cumcache", "boundCumcache", "findByDomNode", "depend", "dePromisifyPatch"];
+const tests = ["cumcache", "boundCumcache", "findByDomNode", "depend", "useTwind"];
 
 // BUILD ALL PLUGINS
 for (const test of tests) {
@@ -44,4 +44,4 @@ for (const test of tests) {
 }
 
 // remove any directories we created
-await $`rm -rf ${[...tests, "base_comparison"]}`
+await $`rm -rf base_comparison ${tests}`

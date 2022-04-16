@@ -3,6 +3,6 @@ import cumcache from "./cumcache";
 import boundCumcache from "./bound-cumcache";
 import findByDomNode from "./findByDomNode";
 import depend from "./depend";
-import dePromisifyPatch from "./dePromisifyPatch";
+import useTwind from "./useTwind";
 
-export { cumcache, boundCumcache, findByDomNode, depend, dePromisifyPatch };
+export { cumcache, boundCumcache, findByDomNode, depend, useTwind };

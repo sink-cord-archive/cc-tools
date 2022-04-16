@@ -192,41 +192,21 @@ let undepend = depend(pluginsToDependOn, () => {
 undepend();
 ```
 
-## DePromisify Patch
+## Use Twind
 
-_Current bundled size: 80 bytes_
+_Current bundled size: 482 bytes_
 
-With the introduction of `findAsync` to Cumcord,
-it is becoming more relevant to have to deal with modules resolving asynchronously
-that need patching synchronously.
+Allows you to use the [Twind](https://twind.dev/) compiler easily.
 
-This function will create a wrapper that manages the async loading for you and returns
-a fake patch that behaves exactly how you'd expect a synchrounous patch.
-
-It will handle the patch being applied and unpatched at any state of the promise.
-
-For an example, here's how to inject `SettingsView`:
+Handles multiple plugins sharing the Twind instance cleanly.
 
 ```js
-import { dePromisifyPatch } from "cumcord-tools";
-import { findAsync, findByDisplayName } from "@cumcord/modules/webpack";
-import { after } from "@cumcord/patcher";
+import { useTwind } from "cumcord-tools";
 
-// the pre-lazyload method
-const unpatch = after(
-  "getPredicateSections",
-  findByDisplayName("SettingsView").prototype,
-  () => {
-    /* ... */
-  }
-);
+const disposeTwind = useTwind();
 
-// the new method that will deal with Discord's lazy loading
-const unpatch = dePromisifyPatch(
-  findAsync(() => findByDisplayName("SettingsView")),
-  (SettingsView) =>
-    after("getPredicateSections", SettingsView.prototype, () => {
-      /* ... */
-    })
-);
+export default {
+  onUnload: disposeTwind,
+  settings: () => <div className="w-5 h-2 m-4">test</div>,
+};
 ```
