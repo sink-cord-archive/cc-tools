@@ -23,7 +23,7 @@ export default () /*: () => void */ => {
     newData.i.src = "https://cdn.skypack.dev/twind/shim";
     newData.c.type = "twind-config";
     newData.c.innerText =
-      "{preflight:!1,theme:{extend:{fontFamily:{sans:'var(--font-primary)',code:'var(--font-code)'}}}}";
+      '{"preflight":false,"theme":{"extend":{"fontFamily":{"sans":"var(--font-primary)","code":"var(--font-code)"}}}}';
 
     document.head?.appendChild(newData.c);
     document.head?.appendChild(newData.i);
