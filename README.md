@@ -191,22 +191,3 @@ let undepend = depend(pluginsToDependOn, () => {
 // i'm done with this code and wish to stop listening for dep un/load events, and cleanly finish
 undepend();
 ```
-
-## Use Twind
-
-_Current bundled size: 482 bytes_
-
-Allows you to use the [Twind](https://twind.dev/) compiler easily.
-
-Handles multiple plugins sharing the Twind instance cleanly.
-
-```js
-import { useTwind } from "cumcord-tools";
-
-const disposeTwind = useTwind();
-
-export default {
-  onUnload: disposeTwind,
-  settings: () => <div className="w-5 h-2 m-4">test</div>,
-};
-```
