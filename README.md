@@ -170,24 +170,97 @@ A good use case is where plugins export an API on window thats only there while 
 ```js
 import { depend } from "cumcord-tools";
 let pluginsToDependOn = [
-  "https://example.com/cool-plugin/",
-  "https://cumcordplugins.github.io/Condom/example.com/cool-plugin/",
+	"https://example.com/cool-plugin/",
+	"https://cumcordplugins.github.io/Condom/example.com/cool-plugin/",
 ];
 
 let undepend = depend(pluginsToDependOn, () => {
-  console.log(
-    "One of the plugins listed has been loaded, or already was loaded"
-  );
-  // let unpatch = after("cool_function", obj, () => {/* ... */});
+	console.log(
+		"One of the plugins listed has been loaded, or already was loaded"
+	);
+	// let unpatch = after("cool_function", obj, () => {/* ... */});
 
-  // this return is optional, returning nothing will simply not bother
-  return () => {
-    console.log("One of the plugins listed has been unloaded.");
-    // cleanup stuff in here.
-    // unpatch();
-  };
+	// this return is optional, returning nothing will simply not bother
+	return () => {
+		console.log("One of the plugins listed has been unloaded.");
+		// cleanup stuff in here.
+		// unpatch();
+	};
 });
 
 // i'm done with this code and wish to stop listening for dep un/load events, and cleanly finish
 undepend();
+```
+
+## Settings
+
+_Current bundled size: 1522 bytes, tree-shakes down further_
+
+CC tools has a full api designed to make working with settings as easy as possible.
+
+Use the tools here correctly and then simply read from the ghost,
+and write to the store if you need any more complex settings modification.
+
+### `setDefaults`
+
+This allows you to set defaults for any `undefined` nest keys:
+
+```js
+import { setDefaults } from "cumcord-tools";
+setDefaults({
+	anOption: true,
+	anotherOption: false,
+	aValue: 5,
+});
+```
+
+### `dependPersist`
+
+Makes a given component rerender on nest change
+
+```jsx
+import { dependPersist } from "cumcord-tools";
+
+export const settings = dependPersist(() => <>{/* settings here */}</>);
+```
+
+### Settings components
+
+All settings components have the following props:
+
+- `k` (string) - The key on the nest
+- `children` (React component) - The label text
+- `depends` (optional string) - If present, the key to require to be truthy to enable this setting
+
+The select component also has
+
+- `options` (`{value:any, label:string}`) - The list of options to select from. No selection = undefined
+
+They are as follows:
+
+- `SSwitch`: a switch.
+- `SText`: a textbox.
+- `SSelect`: a dropdown selection box.
+
+```jsx
+export const Settings = (
+	<SettingsRoot>
+		<SSwitch k="details">Show user details</SSwitch>
+		<SText k="name" depends="details">
+			User name
+		</SText>
+
+		<SSelect
+			k="utype"
+			depends="details"
+			options={[
+				{ value: "NORMAL", label: "Normal user" },
+				{ value: "ADMIN", label: "Administrator" },
+				{ value: "SADMIN", label: "Super Admin" },
+			]}
+		>
+			User type
+		</SSelect>
+	</SettingsRoot>
+);
 ```

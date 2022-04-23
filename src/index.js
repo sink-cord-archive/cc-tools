@@ -1,7 +1,8 @@
 // @flow strict
-import cumcache from "./cumcache";
-import boundCumcache from "./bound-cumcache";
-import findByDomNode from "./findByDomNode";
-import depend from "./depend";
+export { default as cumcache } from "./cumcache";
+export { default as boundCumcache } from "./bound-cumcache";
+export { default as findByDomNode } from "./findByDomNode";
+export { default as depend } from "./depend";
 
-export { cumcache, boundCumcache, findByDomNode, depend };
+export * as settings from "./settings";
+export * from "./settings";
